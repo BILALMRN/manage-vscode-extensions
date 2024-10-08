@@ -1,13 +1,40 @@
 {
   "name": "manage-extensions",
   "displayName": "Manage Extensions",
-  "description": "",
-  "version": "0.0.1",
+  "description": "Manage Extensions in VSCode lets you easily enable or disable groups of extensions to customize your coding environment",
+  "version": "1.0.0",
+  "publisher": "BilalMrn",
+  "author": "BilalMrn",
+  "icon": "icon.png",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BILALMRN/manage-vscode-extensions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BILALMRN/manage-vscode-extensions/issues"
+  },
   "engines": {
     "vscode": "^1.93.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "vscode",
+    "Visual Studio Code",
+    "vscode",
+    "manage",
+    "extensions",
+    "disable",
+    "enable",
+    "extension-manager"
+  ],
+  "tags": [
+    "vscode",
+    "extensions",
+    "management",
+    "productivity"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -18,7 +45,6 @@
       }
     ]
   },
-  
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",

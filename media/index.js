@@ -36,16 +36,15 @@ function renderGroups() {
   document.getElementById("groupsContainer").innerHTML = "";
   Object.keys(groups).forEach((groupId) => {
     const groupName = groupId.replace(/-/g, " ");
-    const groupDiv = document.createElement("div");
+    const checked = groups[groupId].stat ? "checked" : ""
 
+    const groupDiv = document.createElement("div");
     groupDiv.className = "group";
     groupDiv.id = groupId + "superDiv";
     groupDiv.innerHTML = `
         <div class="actions-content">
             <div class="checkbox-wrapper-8">
-              <input class="tgl tgl-skewed" id="cb3-8-${groupId}" onchange="changeCheckBoxStatus.call(this,'${groupId}')" type="checkbox" ${
-      groups[groupId].stat ? "checked" : ""
-    } />
+              <input class="tgl tgl-skewed" id="cb3-8-${groupId}" onchange="changeCheckBoxStatus.call(this,'${groupId}')" type="checkbox" ${checked} />
               <label class="tgl-btn" data-tg-off="OFF" data-tg-on="ON" for="cb3-8-${groupId}"></label>
             </div>
 
@@ -250,7 +249,7 @@ function deleteGroupExtension(groupId) {
   }
 }
 //#endregion checkBoxClear
-s
+
 //#region status extension
 let isChangeCheckBox = false; // Flag to track if checkbox is disabled
 function changeCheckBoxStatus(groupId) {
@@ -282,8 +281,8 @@ function changeCheckBoxStatus(groupId) {
   const extensionIds = Object.keys(groups[groupId].items);
   if (this.checked) {
     extensionIds.forEach((id) => incrementNumRepeatActiveExtensions(id));
-    sendDataToExtension(command.enableExtensions, extensionIds);
     groups[groupId].stat = true;
+    sendDataToExtension(command.enableExtensions, extensionIds);
   } else {
     const filteredExtensionIds = extensionIds.filter((id) => {
       if (NumRepeatActiveExtensions[id] && NumRepeatActiveExtensions[id] >= 1) {
@@ -292,8 +291,8 @@ function changeCheckBoxStatus(groupId) {
       }
       return false;
     });
-    sendDataToExtension(command.disableExtensions, filteredExtensionIds);
     groups[groupId].stat = false;
+    sendDataToExtension(command.disableExtensions, filteredExtensionIds);
   }
   saveGroupsToLocalStorage();
 }

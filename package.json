@@ -45,6 +45,7 @@
       }
     ]
   },
+  "activationEvents": ["onStartupFinished"],
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",

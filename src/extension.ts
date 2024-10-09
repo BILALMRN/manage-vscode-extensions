@@ -77,12 +77,10 @@ export function activate(context: vscode.ExtensionContext) {
             case command.enableExtensions:
               data = message.data as string[];
               data.forEach((extensionId) => enableExtension(extensionId));
-              console.log("enableExtensions Received Extension IDs:", data);
               break;
             case command.disableExtensions:
               data = message.data as string[];
               data.forEach((extensionId) => disableExtension(extensionId));
-              console.log("disableExtensions Received Extension IDs:", data);
               break;
             case command.successMessage:
               data = message.data as string;

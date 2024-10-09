@@ -250,7 +250,7 @@ function deleteGroupExtension(groupId) {
   }
 }
 //#endregion checkBoxClear
-
+s
 //#region status extension
 let isChangeCheckBox = false; // Flag to track if checkbox is disabled
 function changeCheckBoxStatus(groupId) {
@@ -263,8 +263,8 @@ function changeCheckBoxStatus(groupId) {
   if (isChangeCheckBox) {
     // If already disabled, do nothing , by default is false
     sendMessageToExtension(
-      command.successMessage,
-      "The extension is configuring... Please wait before checking again"
+      command.alertMessage,
+      "Please wait...The extension is configuring..."
     );
     this.checked = !this.checked;
     return;

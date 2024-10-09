@@ -3,7 +3,7 @@
 ## Overview
 Manage Extensions in VSCode allows you to easily enable or disable groups of extensions, providing a customizable coding environment. With a user-friendly webview interface, you can drag and drop extensions to activate or deactivate them effortlessly.
 
-![demo](demo.gif)
+![demo](demo.png)
 
 ## Features
 - **Group Management**: Create and manage groups of extensions.

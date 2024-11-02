@@ -2,7 +2,7 @@
   "name": "manage-extensions",
   "displayName": "Manage Extensions",
   "description": "Manage Extensions in VSCode lets you easily enable or disable groups of extensions to customize your coding environment",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "BilalMrn",
   "author": "BilalMrn",
   "icon": "icon.png",

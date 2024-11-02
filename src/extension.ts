@@ -1,9 +1,4 @@
 import * as vscode from "vscode";
-import {
-  disableExtension,
-  enableExtension,
-  listExtensions,
-} from "./helper/manageExtension";
 
 let panel: vscode.WebviewPanel | undefined;
 export function activate(context: vscode.ExtensionContext) {
@@ -24,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (panel) {
         // If the panel already exists, bring it to the front
         panel.reveal(vscode.ViewColumn.One);
-        return;
+        panel.dispose();
       }
       panel = vscode.window.createWebviewPanel(
         "manage-extensions",
@@ -70,17 +65,33 @@ export function activate(context: vscode.ExtensionContext) {
       );
 
       panel.webview.onDidReceiveMessage(
-        (message) => {
+        async(message) => {
           let data;
 
           switch (message.command) {
             case command.enableExtensions:
               data = message.data as string[];
-              data.forEach((extensionId) => enableExtension(extensionId));
+              await data.forEach(async (extensionId) => {
+                try {
+                  await vscode.commands.executeCommand('workbench.extensions.installExtension', extensionId);
+                  vscode.window.showInformationMessage(`Extension ${extensionId} has been on.`);
+                } catch (error) {
+                  vscode.window.showErrorMessage(`Failed to disable extension ${extensionId}`);
+                }
+              });
+              await vscode.commands.executeCommand('workbench.extensions.action.refreshExtension');
               break;
             case command.disableExtensions:
               data = message.data as string[];
-              data.forEach((extensionId) => disableExtension(extensionId));
+              await data.forEach(async (extensionId) => {
+                try {
+                  await vscode.commands.executeCommand('workbench.extensions.uninstallExtension', extensionId);
+                  vscode.window.showInformationMessage(`Extension ${extensionId} has been off.`);
+                } catch (error) {
+                  vscode.window.showErrorMessage(`Failed to disable extension ${extensionId}: ${error}`);
+                }
+              });
+              await vscode.commands.executeCommand('workbench.extensions.action.refreshExtension');
               break;
             case command.successMessage:
               data = message.data as string;
@@ -105,28 +116,27 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(webview);
 }
 
+let extensions : any;
+const getExtensions = ()=> extensions ?? vscode.extensions.all.filter((extension) => {
+  return extension.packageJSON && !extension.packageJSON.isBuiltin && extension.packageJSON.displayName !== 'Manage Extensions';
+});
+let isFirstTime = true;
 async function getWebviewContent(
   _cspSource: string,
   styleVScodeUri: vscode.Uri,
   styleUri: vscode.Uri,
   scriptUri: vscode.Uri
 ) {
-  let extensions;
-  const extensionsId: string[] = await listExtensions();
-  if (extensionsId.length > 0) {
-    extensions = extensionsId.map(
-      (extensionId) =>
-        vscode.extensions.getExtension(extensionId) || { id: extensionId }
-    );
-  } else {
-    //vscode.extensions.all not include the extensions are disable
-    // extensions = vscode.extensions.all;
-    extensions = vscode.extensions.all.filter((extension) => {
-      return extension.packageJSON && !extension.packageJSON.isBuiltin;
-    }); // Exclude built-in extensions
-  }
 
-  // const nonce = getNonce()
+    try{
+      if(isFirstTime) {
+      await vscode.commands.executeCommand('workbench.extensions.action.enableAll');
+      await vscode.commands.executeCommand('workbench.extensions.action.refreshExtension');
+      extensions =  getExtensions();
+      isFirstTime = false;
+      }
+    }catch{};
+
   return `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -164,18 +174,15 @@ async function getWebviewContent(
               height: 80vh;
             "
           >
-          ${extensions
-            .map(
-              (ext: any) => `
+          ${getExtensions().map(
+        (ext: any) => `
             
-            <div class="draggable" id="${
-              ext?.id
-            }" ondragstart="drag(event)" draggable="true">${
-                ext?.packageJSON?.displayName || ext?.id
-              }</div>
+            <div class="draggable" id="${ext.id
+          }" ondragstart="drag(event)" draggable="true">${ext.packageJSON.displayName || ext.id
+          }</div>
             `
-            )
-            .join("")}
+      )
+      .join("")}
           </div>
         </div>
         <div id="groupsContainer" class="groupsContainer"></div>
@@ -195,4 +202,4 @@ enum command {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

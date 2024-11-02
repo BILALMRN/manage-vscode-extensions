@@ -186,7 +186,6 @@ function dropRemove(event) {
     return;
   }
 
-  // console.log(oldParentId,"  :   ",data,"  :   ",newParentId)
 
   // Remove from old group
 
@@ -230,7 +229,6 @@ function clearGroupExtension(groupId) {
     delete groups[groupId];
   }
   groups[groupId] = { stat: false, items: {} };
-  // console.log("🚀 ~ clearGroupExtension ~ groupId:", groupId)
 }
 
 function deleteGroupExtension(groupId) {
@@ -251,32 +249,12 @@ function deleteGroupExtension(groupId) {
 //#endregion checkBoxClear
 
 //#region status extension
-let isChangeCheckBox = false; // Flag to track if checkbox is disabled
 function changeCheckBoxStatus(groupId) {
   if (!navigator.onLine) {
     this.checked = !this.checked;
     sendMessageToExtension(command.connectionStatus, "You are offline");
     return;
   }
-
-  if (isChangeCheckBox) {
-    // If already disabled, do nothing , by default is false
-    sendMessageToExtension(
-      command.alertMessage,
-      "Please wait...The extension is configuring..."
-    );
-    this.checked = !this.checked;
-    return;
-  }
-  // Disable the checkbox for 10 seconds
-  isChangeCheckBox = true;
-  setTimeout(() => {
-    isChangeCheckBox = false; // Re-enable the checkbox after 10 seconds
-    sendMessageToExtension(
-      command.successMessage,
-      "The extension is configured"
-    );
-  }, 5000);
 
   const extensionIds = Object.keys(groups[groupId].items);
   if (this.checked) {
